@@ -1,5 +1,7 @@
 # Hazard und Weibull: Form und Hochrechnen – Streamlit-Demo
 
+**[→ Demo live ausprobieren](https://sebastianhanisch-hazard-weibull-demo.streamlit.app/)**
+
 Dritte Demo der Linie **Überlebenszeit** (zensierte Zeiten bis zum Ereignis) in der „Konzepte“-Reihe für die Website „Sebastian Hanisch – Operations Research und Machine Learning“.
 Sie setzt auf dem Kaplan–Meier-Schätzer von [kaplan-meier-demo](https://github.com/sebastian-hanisch/kaplan-meier-demo) auf: Kaplan–Meier endet am Beobachtungsfenster, und wer weiter hinausrechnen will,
 braucht eine Form. Die Folgedemo [cox-regression-demo](https://github.com/sebastian-hanisch/cox-regression-demo) baut Merkmale ein, ohne eine Grundform festzulegen. Vehikel ist die Containerverweilzeit wie in
@@ -62,16 +64,18 @@ Exakt nachgerechnet ist nur das Handbeispiel (Brüche); alle übrigen Zahlen sin
 - **Nur gegen unabhängige Rechnungen geprüft.** Die Anpassung ist gegen eine Rastersuche, die Standardformeln der Weibull-Likelihood und scipy-Verteilungen geprüft (Abschnitt Tests); ein Fremdpaket für die Überlebensanalyse stand nicht zur Verfügung, und eine Quelle aus der Literatur ist nicht zitiert, weil keine im Volltext gelesen wurde.
 - **Mausklick nicht getestet.** Die App ist mit dem AppTest-Rauchtest und einem Start im Browser geprüft, nicht mit einem Mausklick-Durchlauf jeder Kombination.
 
-## Befunde und Korrekturen gegenüber dem Plan
+## Befunde und Korrekturen gegenüber der ersten Messung
 
-- **Trennschärfe des Weibull-Plots höher als im Plan.** Die Vormessung (200 Läufe, numpy-Zufall, `out_uz_v20_bis_v23.txt`) nannte für lognormal σ = 0,9 (σ = 0,5): Fenster 30 / *n* = 300 80,0 % (91,5 %); Fenster 8 / *n* = 300 7,5 % (16,5 %); Fenster 8 / *n* = 100 0,5 % (2,0 %); Fenster 30 / *n* = 100 17,0 % (23,5 %).
+Vormessung = eine erste, schnelle Messung vor dem Bau der Demo, mit dem Zufallsgenerator von NumPy und 200 Läufen.
+
+- **Trennschärfe des Weibull-Plots höher als in der Vormessung.** Die Vormessung nannte für lognormal σ = 0,9 (σ = 0,5): Fenster 30 / *n* = 300 80,0 % (91,5 %); Fenster 8 / *n* = 300 7,5 % (16,5 %); Fenster 8 / *n* = 100 0,5 % (2,0 %); Fenster 30 / *n* = 100 17,0 % (23,5 %).
   Mit `SplitMix64` und 1000 Läufen ergeben sich 89,5 % (95,4 %), 21,6 % (33,2 %), 2,6 % (3,8 %) und 18,5 % (22,6 %). Es gelten die neuen Zahlen. Die Richtung bleibt: trennscharf nur bei wenig Zensierung und vielen Daten.
-  Die Gegenproben mit drei weiteren Seed-Paaren schwanken im Design Fenster 8 / *n* = 300 zwischen 16,0 und 20,7 %; die 7,5 % der Vormessung liegen deutlich darunter. Die Ursache ist nicht untersucht; möglich ist, dass die Schwelle (ein 5-%-Quantil) aus 200 Läufen unsicher war.
-- **Hochrechnen (V7) bestätigt, mit kleinen Abweichungen.** Plan: Weibull 9,20 ± 0,05 (−27 %), Exponential 14,68 ± 0,08 (+16 %), Kaplan–Meier in 4 % der Läufe definiert. Hier: 9,21 ± 0,06 (−27 %), 14,65 ± 0,09 (+16 %), 5 % (10 von 200). Zufallsbedingt.
-- **Erweitert gegenüber dem Plan:** eine Weibull-Wahrheit als Kontrolle („Form richtig“), eine zweite lognormale Welt (σ = 0,5) und eine fallende Weibull-Welt (Form 0,7), drei Fenster (8, 15, 30 Tage) und zwei Stichprobengrößen (100, 300); dazu die Fehlalarm- und Schwellen-Messungen.
-  Sie stützen die Aussage von Z3 und Z5 des Plans: die Richtung der Verzerrung hängt an der Welt, und die Probe ist nur in ihrer gemessenen Lage trennscharf.
-- **Symbol:** Der Plan nennt die Exponential-Rate λ̂ (= 4/27). Hier heißt sie ρ, damit λ nur die Weibull-Skala bleibt.
-- **Optimierer:** wie im Plan BFGS mit analytischem Gradienten und mehreren Startwerten statt Nelder-Mead; ohne mindestens zwei verschiedene Ereigniszeiten meldet die Anpassung `ok = False` statt einer stillen Zahl (Randfälle der Orakelprüfung des Plans).
+  Die Gegenproben mit drei weiteren Seed-Paaren schwanken im Design Fenster 8 / *n* = 300 zwischen 16,0 und 20,7 %; die 7,5 % der Vormessung liegen unter diesem Bereich. Die Ursache ist nicht untersucht; möglich ist, dass die Schwelle (ein 5-%-Quantil) aus 200 Läufen unsicher war.
+- **Hochrechnen bestätigt, mit kleinen Abweichungen.** Vormessung: Weibull 9,20 ± 0,05 (−27 %), Exponential 14,68 ± 0,08 (+16 %), Kaplan–Meier in 4 % der Läufe definiert. Hier: 9,21 ± 0,06 (−27 %), 14,65 ± 0,09 (+16 %), 5 % (10 von 200). Zufallsbedingt.
+- **Erweitert gegenüber der Vormessung:** eine Weibull-Wahrheit als Kontrolle („Form richtig“), eine zweite lognormale Welt (σ = 0,5) und eine fallende Weibull-Welt (Form 0,7), drei Fenster (8, 15, 30 Tage) und zwei Stichprobengrößen (100, 300); dazu die Fehlalarm- und Schwellen-Messungen.
+  Sie stützen die ursprüngliche Erwartung: die Richtung der Verzerrung hängt an der Welt, und die Probe ist nur in ihrer gemessenen Lage trennscharf.
+- **Symbol:** In der Vormessung hieß die Exponential-Rate λ̂ (= 4/27). Hier heißt sie ρ, damit λ nur die Weibull-Skala bleibt.
+- **Optimierer:** BFGS mit analytischem Gradienten und mehreren Startwerten statt Nelder-Mead; ohne mindestens zwei verschiedene Ereigniszeiten meldet die Anpassung `ok = False` statt einer stillen Zahl (Randfall der Prüfung gegen unabhängige Rechnungen).
 - **n und Fenster in der Seitenleiste** sind auf die gemessenen Werte begrenzt (100 / 300 und 8 / 15 / 30 Tage); die App rechnet Experiment 3 und 4 nicht live.
 
 ## Tests
@@ -93,7 +97,7 @@ Zusammensetzung (Gesamtzahl: siehe `pytest --collect-only -q tests`, aktuell **1
 | `.gitignore` | venv, Caches, Streamlit-Secrets |
 | `.streamlit/config.toml` | Streamlit-Einstellungen (keine Nutzungsstatistik) |
 | `app.py` | Streamlit-App: vier Experimente, Grenzen, Formeln |
-| `hzw_core.py` | Kern, Kopie aus `ueberlebenszeit-planung/kern/uz_core.py` (Stand 2026-11-10): `SplitMix64`, Eingabeprüfung, Kaplan–Meier, Weibull- und Exponential-Anpassung |
+| `hzw_core.py` | Kopie des gemeinsamen Kerns `uz_core.py` der Überlebenszeit-Linie (Stand 2026-11-10): `SplitMix64`, Eingabeprüfung, Kaplan–Meier, Weibull- und Exponential-Anpassung |
 | `hzw_model.py` | Weibull, Exponential, Lognormal in geschlossener Form, Weibull-Plot und R² |
 | `hzw_scenario.py` | Welten, Beobachtungsfenster, Stichprobe aus einem Zufalls-Seed |
 | `hzw_evaluation.py` | Anpassung einer Stichprobe, Messungen (Hochrechnen, Probe), Verdikte, Tabellen |
@@ -140,4 +144,4 @@ Gebaut mit Streamlit, Plotly, pandas und NumPy.
 
 ---
 
-Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zu den Demos: [Interaktive Demos](https://sebastianhanisch.net/demos.html).
+Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zur Reihe: [Überlebenszeit: zensierte Zeiten lesen](https://sebastianhanisch.net/konzepte-ueberlebenszeit.html).
